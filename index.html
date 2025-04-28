@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Performance Analysis - Project Showcase</title>
+    <link href="style.css" rel="stylesheet">
+    <meta name="description" content="Explore and analyze algorithm performance based on research papers.">
+</head>
+<body>
+
+
+<div class="container">
+    <!-- Home Section -->
+    <section id="home" class="section">
+        <div class="jumbotron">
+            <h1 class="display-4">Algorithm Performance Analysis</h1>
+            <p class="lead">The paper "Efficient Algorithms for Densest Subgraph Discovery" addresses the fundamental problem of identifying the densest subgraph in a given graph, a task central to applications in network science, biology, and graph databases. Traditional methods for densest subgraph discovery (DSD), especially those based on edge- or clique-density, are computationally expensive and struggle with large graphs. The authors propose a novel, core-based paradigm leveraging the concept of k k-core and its generalization, the (k,Ψ)-core, where Ψ can be any pattern such as a clique or more complex motif. This approach enables both exact and approximation algorithms that significantly outperform existing methods, with the exact algorithm (CoreExact) being up to four orders of magnitude faster and the approximation (CoreApp) up to two orders faster on large real and synthetic datasets. The paper further generalizes the notion of density to arbitrary patterns, allowing the discovery of dense subgraphs based on complex motifs. Extensive experiments confirm the efficiency and scalability of the proposed algorithms, making them practical for large-scale graph mining tasks</p>
+        </div>
+    </section>
+
+    <section id="Algorithm1" class="section">
+        <h2>Algorithm 1: EXACT</h2>
+        <div class="card">
+            <h3 class="card-title">Description</h3>
+            <p class="card-text">
+                <strong>What the Algorithm is Doing:</strong>
+                <ol>
+                    <li><strong>Exact</strong> is a baseline algorithm designed to find the exact densest subgraph of a graph G based on h-clique density (or edge density when h = 2).</li>
+                    <li>The algorithm searches for the subgraph with the highest density, without any approximations.</li>
+                    <li>The final goal is to find the exact densest subgraph, but it operates on the entire graph every time, making it slower.</li>
+                </ol>
+    
+                <br><strong>How it is Doing It:</strong>
+                <ol>
+                    <li><strong>Binary Search:</strong> The algorithm uses a binary search approach to guess the density value.</li>
+                    <li>For each guess, it builds a flow network where:</li>
+                    <ul>
+                        <li>Vertices and (h-1)-cliques are connected in a specific way.</li>
+                        <li>Capacities are set based on how many h-cliques a vertex participates in.</li>
+                    </ul>
+                    <li>It computes a minimum s-t cut in the flow network.</li>
+                    <li>Based on whether a valid dense subgraph exists or not, the guess is adjusted.</li>
+                    <li>The search continues until the guess is precise enough and the densest subgraph is found.</li>
+                </ol>
+    
+                <br><strong>Steps of Algorithm 1 (Exact) in Points:</strong>
+                <ol>
+                    <li><strong>Input:</strong> Take graph G(V, E) and an h-clique pattern Ψ (e.g., triangle for h = 3).</li>
+                    <li><strong>Initialize Bounds:</strong> Set lower bound l = 0 and upper bound u as the maximum clique-degree across all vertices.</li>
+                    <li><strong>Enumerate (h−1)-Cliques:</strong> List all (h−1)-cliques in the graph.</li>
+                    <li><strong>Binary Search for Density:</strong> Guess a density α = (l + u) / 2 and build a flow network.</li>
+                    <li><strong>Update Search Range:</strong> Update bounds based on the result of the s-t cut.</li>
+                    <li><strong>Return Result:</strong> Output the densest subgraph found.</li>
+                </ol>
+            </p>
+    
+            <h4 class="card-subtitle">Statistics about Algorithm 1 (Exact)</h4>
+            <p><strong>Time Complexity:</strong></p>
+            <p>O(n × (d−1)<sup>h−1</sup> + (n |Λ| + min(n, |Λ|)<sup>3</sup>) log n)</p>
+            <p><strong>Space Complexity:</strong></p>
+            <p>O(n + |Λ|)</p>
+            <p><strong>Practical Performance:</strong></p>
+            <ul>
+                <li>Very slow for large graphs and large h.</li>
+                <li>For moderate-sized graphs (≈26K vertices, 100K edges), it took more than 5 days for 6-cliques.</li>
+                <li>For larger graphs, it is impractical — could not finish in days.</li>
+            </ul>
+            <p><strong>Main Bottlenecks:</strong></p>
+            <ul>
+                <li>Building large flow networks repeatedly.</li>
+                <li>Enumerating and storing all (h−1)-cliques.</li>
+                <li>Working on the entire graph each binary search step.</li>
+            </ul>
+            <p><strong>Comparison:</strong> CoreExact is up to four orders of magnitude faster than Exact.</p>
+       
+    
+        </div>
+    </section>
+
+    <section id="Algorithm2" class="section">
+        <h2>Algorithm 2: CoreExact</h2>
+        <div class="card">
+            <h3 class="card-title">Description</h3>
+            <p class="card-text">
+                <strong>What the Algorithm is Doing:</strong>
+                <ol>
+                    <li>CoreExact is an efficient exact algorithm to find the densest subgraph (based on edge-density or h-clique-density) in a large graph.</li>
+                    <li>Instead of searching over the entire graph directly (which is slow), it first reduces the problem to small dense parts (k-cores or (k,Ψ)-cores).</li>
+                    <li>It then performs a binary search on these smaller parts to find the exact densest subgraph, using flow networks to validate if a subgraph meets the density threshold.</li>
+                    <li>The final aim is to find the exact densest subgraph much faster and more efficiently than previous methods by working on small subgraphs instead of the full graph.</li>
+                </ol>
+                <br>
+                <strong>How it is Doing It:</strong>
+                <ol>
+                    <li><strong>Core Decomposition:</strong> It first computes core decompositions to get (k,Ψ)-cores (smaller dense subgraphs).</li>
+                    <li><strong>Bounding Density:</strong> It estimates tight lower and upper bounds on the possible density.</li>
+                    <li><strong>Locating Promising Subgraphs:</strong> It locates promising subgraphs where the densest subgraph is likely to exist.</li>
+                    <li><strong>Flow Network Construction:</strong> It builds a flow network on these subgraphs and uses binary search to find the precise density.</li>
+                    <li><strong>Pruning for Efficiency:</strong> During the search, it shrinks the working subgraph further based on updated bounds to become even faster.</li>
+                </ol>
+                <br>
+                <strong>Steps of the Algorithm:</strong>
+                <ol>
+                    <li><strong>Input and Preprocessing:</strong> Take a graph G(V, E) and a pattern/clique Ψ; perform (k,Ψ)-core decomposition to find dense subgraphs.</li>
+                    <li><strong>Locate Promising Subgraph:</strong> Identify a (k,Ψ)-core containing the densest subgraph using pruning based on estimated density bounds.</li>
+                    <li><strong>Initialize Search Bounds:</strong> Set tight lower and upper bounds for density based on core decomposition results.</li>
+                    <li><strong>Component-wise Search:</strong> For each connected component of the (k,Ψ)-core, build a flow network and check if it can contain a denser subgraph.</li>
+                    <li><strong>Binary Search with Pruning:</strong> Apply binary search on the flow network to narrow down the exact density, dynamically pruning to smaller (k,Ψ)-cores if possible.</li>
+                    <li><strong>Return Result:</strong> Output the subgraph with the highest density found during the search as the final exact densest subgraph.</li>
+                </ol>
+                <br>
+                <strong>Statistics about CoreExact Algorithm</strong>
+            <br>
+            <strong>Time Complexity:</strong>
+            <p>O(n × (d − 1)<sup>h − 1</sup>)</p>
+            <p><em>n</em> = number of vertices, <em>d</em> = maximum degree of a vertex, <em>h</em> = size of the clique or pattern.</p>
+            <p><strong>Meaning:</strong> CoreExact is much faster than Exact because it does not repeatedly work on the entire graph. It only focuses on small dense parts (cores).</p>
+            
+            <br><strong>Space Complexity:</strong>
+            <p>O(m)</p>
+            <p><em>m</em> = number of edges.</p>
+            <p><strong>Meaning:</strong> CoreExact requires space proportional to the number of edges, instead of growing exponentially with patterns like Exact.</p>
+            
+            <br><strong>Practical Performance (based on experiments):</strong>
+            <ul>
+                <li>Up to four orders of magnitude faster than the Exact algorithm.</li>
+                <li>On graphs with millions of vertices and edges, CoreExact can solve densest subgraph problems within seconds or minutes, while Exact might never finish.</li>
+                <li>CoreExact successfully handles graphs with:
+                    <ul>
+                        <li>Millions of vertices (e.g., 19 million vertices, 298 million edges).</li>
+                        <li>Higher-order cliques (e.g., triangles, 4-cliques, 5-cliques, etc.).</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <br><strong>Accuracy:</strong>
+            <ul>
+                <li>CoreExact finds the exact densest subgraph — no approximation involved.</li>
+                <li>Matches the optimal density found by Exact, just in much less time.</li>
+            </ul>
+
+            <br><strong>Efficiency Improvements:</strong>
+            <ul>
+                <li>CoreExact uses tight density bounds, locates small cores, and shrinks flow networks during binary search.</li>
+                <li>Flow network size reduces during the search, making every iteration faster than before.</li>
+            </ul>
+
+            <br><strong>Experimental Summary:</strong>
+            <ul>
+                <li>On graphs with ≈26K nodes and 100K edges:
+                    <ul>
+                        <li>Exact took >5 days for 6-clique DSD.</li>
+                        <li>CoreExact finished the same task in a few minutes.</li>
+                    </ul>
+                </li>
+                <li>On graphs with ≈19M nodes and 298M edges:
+                    <ul>
+                        <li>CoreExact completed large graph DSD tasks, while Exact failed to complete.</li>
+                    </ul>
+                </li>
+            </ul>
+        </p>
+            
+        </div>
+    </section>
+
+    <section id="datasets" class="section">
+        <h2>Dataset 1: Netscience</h2>
+        <div class="card">
+            <h3 class="card-title">Description</h3>
+            <p class="card-text">
+                Size and Structure: The Netscience dataset consists of 1,589 vertices and 2,742 edges .
+
+Application in Densest Subgraph Discovery: It is used in experiments exploring various graph patterns, including edge- and h-clique-based densest subgraphs. It serves as an example dataset for evaluating the efficiency of core-based algorithms, especially the CoreApp algorithm, which is notably faster for large graphs like Netscience .
+
+Pattern-Density Results: For pattern-density experiments, Netscience shows results with different subgraph densities for patterns like 2-star and diamond .
+
+        </div>
+    </section>
+
+
+    <section id="datasets" class="section">
+        <h2>Dataset 2: Yeast</h2>
+        <div class="card">
+            <h3 class="card-title">Description</h3>
+            <p class="card-text">
+                Yeast is the dataset found by us aas the dataset yeast given in the paper link was not opening, so i used yeast data found at https://networkrepository.com/bio-yeast.php Size and Structure: The Yeast dataset consists of 1,458 vertices (nodes) and 1,948 edges.
+
+Application in Densest Subgraph Discovery: This dataset is used to evaluate various graph mining algorithms, including densest subgraph discovery. It is applied in experiments that investigate both edge- and pattern-based densities. Specifically, the Yeast dataset provides insights into community structure analysis in biological networks, where different subgraphs exhibit varying levels of cohesion.
+            </p>
+        </div>
+    </section>
+
+
+    <section id="datasets" class="section"></section>
+        <h2>Dataset 2: As-Caida</h2>
+        <div class="card">
+            <h3 class="card-title">Description</h3>
+            <p class="card-text">
+                The CAIDA AS Relationships dataset, available through Stanford's SNAP repository, provides a comprehensive view of the Internet's Autonomous System (AS) interconnections. Derived from RouteViews BGP table snapshots, it includes 122 AS graphs spanning from January 2004 to November 2007. Each graph represents a snapshot of the AS-level topology, detailing the relationships between ASes, such as customer-provider, peer-peer, and sibling-sibling links. This dataset is invaluable for researchers studying Internet topology, BGP routing policies, and network resilience.​
+
+
+Sources
+
+            </p>
+        </div>
+    </section>
+
+        <!-- Comparative Results Section -->
+        <section id="comparative-results for Edge Density" class="section">
+            <h2>Comparative Results for Edge Density: CoreExact vs Exact</h2>
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="performance-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Dataset</th>
+                                <th colspan="2">edge</th>
+                                <th colspan="2">triangle</th>
+                                <th colspan="2">4-clique</th>
+                                <th colspan="2">5-clique</th>
+                                <th colspan="2">6-clique</th>
+                           
+                            </tr>
+                            <tr>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Yeast</td>
+                                <td>1</td><td>2.5</td>
+                                <td>0</td><td>2.5</td>
+                                <td>0</td><td>2,5</td>
+                                <td>2.5</td><td>2.5</td>
+                                <td>2.5</td><td>2.5</td>
+                                
+                            </tr>
+                            <tr>
+                                <td>Netscience</td>
+                                <td>1.72</td><td>9.50</td>
+                                <td>9.50</td><td>9.50</td>
+                                <td>9.5</td><td>9.50</td>
+                                <td>9.50</td><td>9.50</td>
+                                <td>9.50</td><td>9.50</td>
+                                
+                            </tr>
+                        </tr>
+                        <td>As-Caida</td>
+                        <td>1</td><td>15.5</td>
+                        <td>15.5</td><td>15</td>
+                        <td>15.5</td><td>15.5</td>
+                        <td>15.5</td><td>15.5</td>
+                        <td>15.5</td><td>15.5</td>
+                      
+                    </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                <div class="highlight-box mt-4">
+                    <h4>Analysis Notes</h4>
+                    <p>The CoreExact algorithm demonstrates superior density preservation across all pattern types, particularly evident in complex structures like 4-cliques and diamonds. While Exact Core shows theoretical optimality, CoreExact maintains practical efficiency with minimal density loss (≤2.8% across all tested patterns).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparative-results for Edge Density" class="section">
+            <h2>Comparative Results for cliques Density: CoreExact vs Exact</h2>
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="performance-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Dataset</th>
+                                <th colspan="2">edge</th>
+                                <th colspan="2">triangle</th>
+                                <th colspan="2">4-clique</th>
+                                <th colspan="2">5-clique</th>
+                                <th colspan="2">6-clique</th>
+                                
+                            </tr>
+                            <tr>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                                <th>Exact</th><th>CoreExact </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Yeast</td>
+                                <td>1</td><td>2.5</td>
+                                <td>0</td><td>3.33</td>
+                                <td>0</td><td>2.5</td>
+                                <td>1</td><td>1</td>
+                                <td>0.166</td><td>0.166</td>
+                                
+                            </tr>
+                            <tr>
+                                <td>Netscience</td>
+                                <td>1.72</td><td>9.50</td>
+                                <td>57</td><td>57</td>
+                                <td>242.5</td><td>242.5</td>
+                                <td>775.2</td><td>775.2</td>
+                                <td>1938</td><td>1938</td>
+                              
+                            </tr>
+                            <tr></tr>
+                                <td>As-Caida</td>
+                                <td>1</td><td>15.5</td>
+                                <td>155</td><td>145</td>
+                                <td>1123.75</td><td>1123.75</td>
+                                <td>6293</td><td>6293</td>
+                                <td>1938</td><td>28318.5</td>
+                              
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    
+                <div class="highlight-box mt-4">
+                    <h4>Analysis Notes</h4>
+                    <p>Why Is There a Difference in the Output?
+                        Pruning:
+                        
+                        CoreExact prunes low-degree nodes (works on 
+                        𝑘 max-core); Exact works on the full graph.
+                        
+                        Clique Enumeration:
+                        
+                        CoreExact enumerates fewer, more relevant cliques; Exact enumerates many cliques, including irrelevant ones.
+                        
+                        Flow Network Size:
+                        
+                        CoreExact uses a smaller, denser network; Exact uses a larger, sparser network, making finding solutions harder.
+                        
+                        Resulting Subgraph:
+                        
+                        CoreExact gives smaller, denser subgraphs; Exact gives larger, less dense subgraphs.
+                        
+                        </p>
+                </div>
+            </div>
+        </section>
+
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Algorithm Project Showcase. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>

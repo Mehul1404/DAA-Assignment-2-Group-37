@@ -1,0 +1,311 @@
+/* Vanilla CSS Styling */
+
+/* General Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #9290C3;
+    background: #070F2B;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+h1, h2, h3 {
+    margin-bottom: 20px;
+    color: #003580;
+}
+
+/* Navbar */
+nav {
+    background: #1B1A55;
+    color: #9290C3;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background: #003580;
+}
+
+/* Sections */
+.section {
+    background: #ffffff;
+    padding: 30px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.section:hover {
+    transform: translateY(-5px);
+}
+
+/* Card Styling */
+.card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    color: #535C91;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+img:hover {
+    transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+    background: #1B1A55;
+    color: #9290C3;
+    text-align: center;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #ccc;
+}
+
+/* Additions to existing CSS */
+
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.performance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.performance-table th,
+.performance-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #1B1A55;
+}
+
+.performance-table th {
+    background-color: #535C91;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.performance-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.performance-table tr:hover {
+    background-color: rgba(83, 92, 145, 0.1);
+}
+
+.performance-table td {
+    color: #495057;
+}
+
+/* Improved Card Styling */
+.card {
+    background: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.card-title {
+    color: #003580;
+    margin-bottom: 1.2rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.card-subtitle {
+    color: #535C91;
+    margin: 1.5rem 0 1rem;
+    font-size: 1.1rem;
+}
+
+/* Better Image Transitions */
+.img-fluid {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.img-fluid:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Improved Section Transitions */
+.section {
+    transition: transform 0.3s ease;
+}
+
+.section:hover {
+    transform: translateY(-3px);
+}
+
+/* Number Formatting */
+.number {
+    font-family: 'Courier New', monospace;
+    color: #003580;
+    font-weight: 600;
+}
+
+/* Add contrast to table headers */
+.performance-table th {
+    background-color: #1B1A55;  /* Darker background */
+    color: #9290C3;            /* Updated text color */
+    font-weight: 700;
+}
+
+/* Add time-specific coloring */
+.execution-time {
+    color: #003580;
+    font-weight: 600;
+}
+
+/* Add hover effect for better row distinction */
+.performance-table tr:hover {
+    background-color: rgba(27, 26, 85, 0.05) !important;
+}
+
+/* Add responsive breakpoints */
+@media (max-width: 768px) {
+    .performance-table {
+        font-size: 0.85em;
+    }
+    .performance-table th,
+    .performance-table td {
+        padding: 10px 12px;
+    }
+}
+
+/* Add highlighting for fastest times */
+.performance-table td:nth-child(4) {
+    color: #1B1A55;
+    font-weight: 600;
+}
+
+/* Add subtle background for header */
+.performance-table thead {
+    background: linear-gradient(to right, #535C91, #1B1A55);
+}
+
+/* Add number formatting consistency */
+.performance-table td {
+    font-family: 'Courier New', monospace;
+}
+
+/* Add responsive typography */
+@media (max-width: 600px) {
+    .performance-table {
+        font-size: 0.8em;
+    }
+    .performance-table th,
+    .performance-table td {
+        padding: 8px 10px;
+    }
+}
+
+
+/* Comparative Results Table Styling */
+.performance-table th:nth-child(n+2), 
+.performance-table td:nth-child(n+2) {
+    text-align: center;
+    min-width: 80px;
+}
+
+.performance-table td[colspan="2"],
+.performance-table th[colspan="2"] {
+    background-color: rgba(83, 92, 145, 0.1);
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+/* Dash styling for missing data */
+.performance-table td:empty::before {
+    content: "-";
+    color: #6c757d;
+}
+
+.performance-table th:nth-child(n+2), 
+.performance-table td:nth-child(n+2) {
+    text-align: center;
+    min-width: 80px;
+}
+
+.performance-table td[colspan="2"],
+.performance-table th[colspan="2"] {
+    background-color: rgba(83, 92, 145, 0.1);
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+/* Dash styling for missing data */
+.performance-table td:empty::before {
+    content: "-";
+    color: #6c757d;
+}

@@ -54,7 +54,7 @@ Replace `<input_file>.txt` with the appropriate dataset file.
 
 ## Project Webpage
 For more details and visualizations, visit our project page:
-**[Project Webpage]((https://mehul1404.github.io/DAA-Assignment-2-Group-37/))** 
+**[Project Webpage](https://mehul1404.github.io/DAA-Assignment-2-Group-37/)** 
 
 ---
 
